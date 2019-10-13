@@ -23,83 +23,36 @@ mosquitto_sub -h mqtt.example.com -p 1883 -v -t "sensors/#"
 This will generate output like this:
 
 ```
-sensors/rtl_433 {"time" : "2018-07-05 09:48:17", "model" : "AlectoV1 Wind Sensor", "id" : 36, "channel" : 1, "battery" : "OK", "wind_speed" : 0.000, "wind_gust" : 0.200, "wind_direction" : 315, "mic" : "CHECKSUM"}
-
-sensors/rtl_433/AlectoV1 Wind Sensor/time 2018-07-05 09:48:17
-sensors/rtl_433/AlectoV1 Wind Sensor/id 36
-sensors/rtl_433/AlectoV1 Wind Sensor/channel 1
-sensors/rtl_433/AlectoV1 Wind Sensor/battery OK
-sensors/rtl_433/AlectoV1 Wind Sensor/wind_speed 0.0
-sensors/rtl_433/AlectoV1 Wind Sensor/wind_gust 0.2
-sensors/rtl_433/AlectoV1 Wind Sensor/wind_direction 315
-sensors/rtl_433/AlectoV1 Wind Sensor/mic CHECKSUM
-sensors/rtl_433 {"time" : "2018-07-05 09:48:22", "model" : "AlectoV1 Rain Sensor", "id" : 140, "channel" : 0, "battery" : "OK", "rain_total" : 621.750, "mic" : "CHECKSUM"}
-
-sensors/rtl_433/AlectoV1 Rain Sensor/time 2018-07-05 09:48:22
-sensors/rtl_433/AlectoV1 Rain Sensor/id 140
-sensors/rtl_433/AlectoV1 Rain Sensor/channel 0
-sensors/rtl_433/AlectoV1 Rain Sensor/battery OK
-sensors/rtl_433/AlectoV1 Rain Sensor/rain_total 621.75
-sensors/rtl_433/AlectoV1 Rain Sensor/mic CHECKSUM
-sensors/rtl_433 {"time" : "2018-07-05 09:48:48", "model" : "AlectoV1 Wind Sensor", "id" : 36, "channel" : 1, "battery" : "OK", "wind_speed" : 0.000, "wind_gust" : 0.000, "wind_direction" : 270, "mic" : "CHECKSUM"}
-
-sensors/rtl_433/AlectoV1 Wind Sensor/time 2018-07-05 09:48:48
-sensors/rtl_433/AlectoV1 Wind Sensor/id 36
-sensors/rtl_433/AlectoV1 Wind Sensor/channel 1
-sensors/rtl_433/AlectoV1 Wind Sensor/battery OK
-sensors/rtl_433/AlectoV1 Wind Sensor/wind_speed 0.0
-sensors/rtl_433/AlectoV1 Wind Sensor/wind_gust 0.0
-sensors/rtl_433/AlectoV1 Wind Sensor/wind_direction 270
-sensors/rtl_433/AlectoV1 Wind Sensor/mic CHECKSUM
-sensors/rtl_433 {"time" : "2018-07-05 09:48:59", "model" : "AlectoV1 Rain Sensor", "id" : 140, "channel" : 0, "battery" : "OK", "rain_total" : 621.750, "mic" : "CHECKSUM"}
-
-sensors/rtl_433/AlectoV1 Rain Sensor/time 2018-07-05 09:48:59
-sensors/rtl_433/AlectoV1 Rain Sensor/id 140
-sensors/rtl_433/AlectoV1 Rain Sensor/channel 0
-sensors/rtl_433/AlectoV1 Rain Sensor/battery OK
-sensors/rtl_433/AlectoV1 Rain Sensor/rain_total 621.75
-sensors/rtl_433/AlectoV1 Rain Sensor/mic CHECKSUM
-```
-
-Note that spaces can be used in topic names!
-
-This could be used to subscribe to selected topics, e.g. if you want to know the battery status of all the sensors you could subscribe to the topic `sensors/rtl_433/+/battery`.
-
-This would look similar to this:
-
-```bash
-mosquitto_sub -h mqtt.example.com -p 1883 -v -t "sensors/rtl_433/+/battery"
-sensors/rtl_433/AlectoV1 Rain Sensor/battery OK
-sensors/rtl_433/AlectoV1 Wind Sensor/battery OK
-sensors/rtl_433/AlectoV1 Rain Sensor/battery OK
-```
-
-
-## Installation
-Before you get started you'll have to install some packages.
-
-First install software using the command:
-
-``` bash
-apt-get update && apt-get install -y rtl-sdr librtlsdr-dev librtlsdr0 git automake libtool cmake
-```
-
-This will install all the software you need to build the latest version of the rtl_433 receiver
-software.
-
-Next download and build the receiver software:
-
-```bash
-git clone https://github.com/merbanan/rtl_433.git && cd rtl_433/ && mkdir build && cd build && cmake ../ && make && make install
-```
-The last step is to install the python MQTT library:
-
-```bash
-pip3 install paho-mqtt
+rtl433-mqtt-gateway    | RTL: {"time" : "2019-10-13 20:16:54", "brand" : "LaCrosse", "model" : "LaCrosse-TX29IT", "id" : 10, "battery_ok" : 1, "newbattery" : 0, "temperature_C" : 17.100, "humidity" : 68, "mic" : "CRC"}
+rtl433-mqtt-gateway    | 
+rtl433-mqtt-gateway    | Sending PUBLISH (d0, q0, r1, m42), 'b'sensors/rtl_433/LaCrosse-TX29IT/10'', ... (189 bytes)
+rtl433-mqtt-gateway    | Pub: 42
 ```
 
 ## Configuration
-Copy the file `config.py.example` to `config.py` and change the settings by editting this file.
+Setup env variables for your docker. For example in docker-compose:
+
+```
+version: '3.6'
+services:
+  rtl433-mqtt-gateway:
+    container_name: rtl433-mqtt-gateway
+    image: rtl433-mqtt-gateway:latest
+    restart: always
+    environment:
+      MQTT_USER: "homeassistant"
+      MQTT_PASS: "password"
+      MQTT_HOST: "localhost"
+      MQTT_PORT: 1883
+      MQTT_TOPIC: "sensors/rtl_433"
+      MQTT_QOS: 0
+      RTL_OPTS: "-d 1 -f 868200000 -M newmodel"
+      DEBUG: "False"
+    devices:
+      - /dev/bus/usb
+    privileged: true
+    network_mode: host
+```
 
 Once you're done you can connect the RTL-SDR to a USB port and start using the
 python script.
