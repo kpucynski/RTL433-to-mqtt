@@ -2,10 +2,8 @@
 # Docker file to create an image that contains enough software to listen to events on the 433,92 Mhz band,
 # filter these and publish them to a MQTT broker.
 #
-# The script resides in a volume and should be modified to meet your needs.
-#
 # The example script filters information from weather stations and publishes the information to topics that
-# Domoticz listens on.
+# HomeAssistant/Domoticz listens on.
 #
 # Special attention is required to allow the container to access the USB device that is plugged into the host.
 # The container needs priviliged access to /dev/bus/usb on the host.
@@ -13,9 +11,11 @@
 # docker run --name rtl_433 -d -e MQTT_HOST=<mqtt-broker.example.com>   --privileged -v /dev/bus/usb:/dev/bus/usb  <image>
 
 FROM python:3.7
-MAINTAINER Marco Verleun
 
-LABEL Description="This image is used to start a script that will monitor for events on 433,92 Mhz" Vendor="MarCoach" Version="1.0"
+# based on tool by Marco Verleun
+LABEL Maintainer="Karol Pucynski"
+LABEL Description="This image is used to start a script that will monitor for events on 433,92 Mhz"
+LABEL Version="1.0"
 
 # Install additional modules
 RUN pip install paho-mqtt
@@ -46,7 +46,6 @@ RUN git clone https://github.com/merbanan/rtl_433.git \
 #
 # Configuration variables
 #
-
 ENV MQTT_USER=""
 ENV MQTT_PASS=""
 ENV MQTT_HOST="mqtt.example.com"
@@ -54,6 +53,7 @@ ENV MQTT_PORT=1883
 ENV MQTT_TOPIC="sensors/rtl_433"
 ENV MQTT_QOS=0
 ENV RTL_OPTS=""
+ENV DEBUG="False"
 
 #
 # Copy config, script and make it executable
@@ -64,5 +64,4 @@ RUN chmod +x /scripts/rtl2mqtt.py
 #
 # When running a container this script will be executed
 #
-
-ENTRYPOINT ["/scripts/rtl2mqtt.py"]
+ENTRYPOINT [ "/scripts/rtl2mqtt.py" ]

@@ -16,7 +16,7 @@ MQTT_PORT = int(os.environ['MQTT_PORT'])
 MQTT_TOPIC = str(os.environ['MQTT_TOPIC'])
 MQTT_QOS = int(os.environ['MQTT_QOS'])
 RTL_OPTS = str(os.environ['RTL_OPTS'])
-DEBUG = False # Change to True to log all MQTT messages
+DEBUG = eval(os.environ['DEBUG'])
 
 rtl_433_cmd = "/usr/local/bin/rtl_433 -F json " + RTL_OPTS
 
@@ -76,6 +76,7 @@ mqttc.loop_start()
 
 # Start RTL433 listener
 print("Starting RTL433")
+print("Opts: " + str(rtl_433_cmd))
 rtl433_proc = subprocess.Popen(rtl_433_cmd.split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True)
 
 while True:
@@ -94,16 +95,12 @@ while True:
             sys.exit(rtl433_proc.poll())
 
         if "time" in line:
-            mqttc.publish(MQTT_TOPIC, payload=line, qos=MQTT_QOS, retain=True)
             json_dict = json.loads(line)
             for item in json_dict:
                 value = json_dict[item]
-                if "model" in item:
+                if item == "model":
                     subtopic = value
-                if "id" in item:
+                if item == "id":
                     subtopic += "/" + str(value)
+            mqttc.publish(MQTT_TOPIC+"/"+subtopic, payload=line, qos=MQTT_QOS, retain=True)
 
-            for item in json_dict:
-                value = json_dict[item]
-                if not "model" in item:
-                    mqttc.publish(MQTT_TOPIC+"/"+subtopic+"/"+item, payload=value, qos=MQTT_QOS, retain=True)
