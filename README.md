@@ -1,5 +1,7 @@
 # RTL433 to mqtt gateway
 
+[![Build Status](https://travis-ci.org/kpucynski/RTL433-to-mqtt.svg?branch=master)](https://travis-ci.org/kpucynski/RTL433-to-mqtt)
+
 This small script is a cheap and easy way to start with IoT projects.
 By using the great rtl_433 software and a cheap RTL-SDR receiver it will listen to all kinds of devices transmitting at the 433,92 Mhz frequency.
 
@@ -57,7 +59,7 @@ services:
 Once you're done you can connect the RTL-SDR to a USB port and start using the
 python script.
 
-## Docker
+## Docker build
 A `Dockerfile` is included as well. Use it if you want to run this software in a Docker container.
 
 Navigate to the `src` directory of this project and enter the following command:
