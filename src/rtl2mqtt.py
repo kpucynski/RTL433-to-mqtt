@@ -9,9 +9,16 @@ import os
 import json
 import re
 
-from config import *
+MQTT_USER = str(os.environ['MQTT_USER'])
+MQTT_PASS = str(os.environ['MQTT_PASS'])
+MQTT_HOST = str(os.environ['MQTT_HOST'])
+MQTT_PORT = int(os.environ['MQTT_PORT'])
+MQTT_TOPIC = str(os.environ['MQTT_TOPIC'])
+MQTT_QOS = int(os.environ['MQTT_QOS'])
+RTL_OPTS = str(os.environ['RTL_OPTS'])
+DEBUG = True # Change to True to log all MQTT messages
 
-rtl_433_cmd = "/usr/local/bin/rtl_433 -F json"
+rtl_433_cmd = "/usr/local/bin/rtl_433 -F json " + RTL_OPTS
 
 important_rtl_output_re = re.compile("^(Found|Tuned)")
 

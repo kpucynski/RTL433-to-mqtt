@@ -44,10 +44,21 @@ RUN git clone https://github.com/merbanan/rtl_433.git \
 	&& make install
 
 #
+# Configuration variables
+#
+
+ENV MQTT_USER=""
+ENV MQTT_PASS=""
+ENV MQTT_HOST="mqtt.example.com"
+ENV MQTT_PORT=1883
+ENV MQTT_TOPIC="sensors/rtl_433"
+ENV MQTT_QOS=0
+ENV RTL_OPTS=""
+
+#
 # Copy config, script and make it executable
 #
 COPY rtl2mqtt.py /scripts/rtl2mqtt.py
-COPY config.py /scripts/config.py
 RUN chmod +x /scripts/rtl2mqtt.py
 
 #
