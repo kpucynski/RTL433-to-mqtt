@@ -18,7 +18,8 @@ LABEL Description="This image is used to start a script that will monitor for ev
 LABEL Version="1.0"
 
 # Install additional modules
-RUN pip install paho-mqtt
+COPY requirements.txt /requirements.txt
+RUN pip install -r requirements.txt
 
 #
 # First install software packages needed to compile rtl_433 and to publish MQTT events
