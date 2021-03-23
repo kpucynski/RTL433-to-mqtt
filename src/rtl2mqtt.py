@@ -103,4 +103,3 @@ while True:
                 if item == "id":
                     subtopic += "/" + str(value)
             mqttc.publish(MQTT_TOPIC+"/"+subtopic, payload=line, qos=MQTT_QOS, retain=True)
-
