@@ -21,6 +21,7 @@ The gateway will receive information from the SDR receiver and publish them in J
 Subtopics are created from this JSON line allowing to easily subscribe to specific sensors.
 
 Testing can be done with the following command:
+
 ```bash
 mosquitto_sub -h mqtt.example.com -p 1883 -v -t "sensors/#"
 ```

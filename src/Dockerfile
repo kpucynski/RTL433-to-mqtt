@@ -24,14 +24,15 @@ RUN pip install -r requirements.txt
 #
 # First install software packages needed to compile rtl_433 and to publish MQTT events
 #
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install --no-install-recommends -y \
 	rtl-sdr \
 	librtlsdr-dev \
 	librtlsdr0 \
 	git \
 	automake \
 	libtool \
-	cmake
+	cmake \
+    && rm -rf /var/lib/apt/lists/*
 
 #
 # Pull RTL_433 source code from GIT, compile it and install it

@@ -6,7 +6,6 @@ set -e
 echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
 architectures="arm arm64 amd64"
-images=""
 platforms=""
 
 for arch in $architectures
