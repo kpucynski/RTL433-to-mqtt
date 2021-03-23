@@ -29,7 +29,7 @@ This will generate output like this:
 
 ```
 rtl433-mqtt-gateway    | RTL: {"time" : "2019-10-13 20:16:54", "brand" : "LaCrosse", "model" : "LaCrosse-TX29IT", "id" : 10, "battery_ok" : 1, "newbattery" : 0, "temperature_C" : 17.100, "humidity" : 68, "mic" : "CRC"}
-rtl433-mqtt-gateway    | 
+rtl433-mqtt-gateway    |
 rtl433-mqtt-gateway    | Sending PUBLISH (d0, q0, r1, m42), 'b'sensors/rtl_433/LaCrosse-TX29IT/10'', ... (189 bytes)
 rtl433-mqtt-gateway    | Pub: 42
 ```
